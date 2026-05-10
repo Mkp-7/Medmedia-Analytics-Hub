@@ -61,7 +61,7 @@ PRESETS = {
 
 
 def render():
-    page_header("AI Insights Engine", "Strategic analysis for content, advertising, and audience decisions", "🤖")
+    page_header("AI Insights Engine", "AI-powered analysis of healthcare data → content strategy, ad sales, and editorial decisions", "🤖")
 
     import os
     has_key = any(os.environ.get(k) for k in ["GROQ_API_KEY","GEMINI_API_KEY","OPENROUTER_API_KEY"])
@@ -96,52 +96,35 @@ def render():
 
     st.markdown("---")
     section_header("💬 Ask the intelligence engine")
+    st.caption("Ask anything about content strategy, audience targeting, pharma advertising, or editorial decisions.")
 
-    suggestions = [
+    examples = [
         "Which oncology topics should we prioritize for Q3 content?",
-        "Which pharma companies should our ad sales team target this week?",
+        "Which pharma companies should our ad sales team call this week?",
         "Should we launch a neurology-focused podcast? Build the case.",
         "How do we compete with Medscape for oncology HCP attention?",
     ]
 
-    if "ai_prefill" not in st.session_state:
-        st.session_state["ai_prefill"] = ""
-    if "ai_answer" not in st.session_state:
-        st.session_state["ai_answer"] = ""
-    if "ai_asked" not in st.session_state:
-        st.session_state["ai_asked"] = ""
+    user_q = st.text_area("Your question", placeholder="\n".join(f"• {q}" for q in examples[:3]), height=90, label_visibility="collapsed")
 
-    # Suggestion buttons
-    cols = st.columns(2)
-    for i, q in enumerate(suggestions):
-        if cols[i % 2].button(q[:50] + "…", key=f"sug_{i}"):
-            st.session_state["ai_prefill"] = q
+    ex_cols = st.columns(2)
+    for i, q in enumerate(examples[:4]):
+        if ex_cols[i%2].button(q[:45]+"…", key=f"ex_{i}"):
+            user_q = q
 
-    # Text input uses prefill as default value
-    user_q = st.text_input(
-        "Question",
-        value=st.session_state["ai_prefill"],
-        placeholder="Type your question and press Enter…",
-        label_visibility="collapsed",
-    )
-
-    # Update prefill to match whatever user typed
-    st.session_state["ai_prefill"] = user_q
-
-    # Fire when Enter pressed (value changed and non-empty)
-    if user_q and user_q != st.session_state["ai_asked"]:
+    if st.button("🤖 Get AI Insight", type="primary", disabled=not user_q.strip()):
         with st.spinner("Analyzing…"):
             answer = call_ai(user_q, SYSTEM)
-        st.session_state["ai_answer"] = answer
-        st.session_state["ai_asked"]  = user_q
+        st.session_state["last_answer"]   = answer
+        st.session_state["last_question"] = user_q
 
-    if st.session_state["ai_answer"]:
-        st.markdown(f"**{st.session_state['ai_asked']}**")
-        st.markdown(
-            f'<div class="ai-box"><div class="ai-label">Analysis</div>{st.session_state["ai_answer"]}</div>',
-            unsafe_allow_html=True,
-        )
+    if "last_answer" in st.session_state:
+        st.markdown(f"**Q: {st.session_state['last_question']}**")
+        st.markdown(f'<div class="ai-box"><div class="ai-label">🤖 AI Analysis</div>{st.session_state["last_answer"]}</div>', unsafe_allow_html=True)
 
     st.markdown("---")
-    st.caption("Analysis generated from live ClinicalTrials.gov and PubMed data.")
-
+    section_header("🔧 How this works")
+    c1, c2, c3 = st.columns(3)
+    c1.markdown("**Live data context**\n\nEvery prompt is enriched with real data from ClinicalTrials.gov (trial counts, sponsors) and PubMed (article counts, trending topics, YoY growth).")
+    c2.markdown("**Business context**\n\nThe system prompt encodes the healthcare media business model: HCP reach, pharma advertiser revenue, the content→audience→advertiser flywheel.")
+    c3.markdown("**Actionable output**\n\nPrompts are designed to produce numbered, specific recommendations — not vague summaries. Useful for editors, sales reps, and product managers.")
