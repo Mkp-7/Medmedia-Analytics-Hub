@@ -3,8 +3,8 @@
 import streamlit as st
 import plotly.graph_objects as go
 
-from utils.api import fetch_sponsor_intel, pubmed_specialty_counts
-from utils.ui import page_header, section_header
+from utils.api import fetch_specialty_trial_counts, fetch_sponsor_intel
+from utils.ui import page_header, section_header, demo_warning
 
 SPECIALTIES = ["Oncology","Cardiology","Neurology","Immunology","Rare Disease","Endocrinology","Infectious Disease","Gastroenterology","Pulmonology","Hematology"]
 COLORS = ["#378ADD","#1D9E75","#BA7517","#D4537E","#534AB7","#639922","#E24B4A","#0F6E56","#185FA5","#63222C"]
@@ -13,19 +13,20 @@ ENGAGEMENT = {"Oncology":{"hcp":48000,"or":34.2},"Cardiology":{"hcp":32000,"or":
 
 
 def render():
-    section_header("🏥 Research activity by specialty - publications last 12 months")
+    page_header("Audience Intelligence", "HCP specialty reach, geographic trial density, and pharma sponsor ad-targeting intel", "👥")
 
     with st.spinner("Loading audience data…"):
+        spec_counts  = fetch_specialty_trial_counts(SPECIALTIES)
         sponsor_data = fetch_sponsor_intel("oncology cardiology neurology rare disease", 50)
-        spec_counts  = pubmed_specialty_counts(SPECIALTIES, days=365)
 
     if not any(spec_counts.values()):
+        demo_warning()
         spec_counts = {s: ENGAGEMENT[s]["hcp"] for s in SPECIALTIES if s in ENGAGEMENT}
 
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Specialties tracked",     len(SPECIALTIES))
-    k2.metric("Top Specialty (Oncology)", f"{max(spec_counts.values()):,}", "publications last 12 months")
-    k3.metric("Pharma Sponsors Tracked", "500+", "active trial sponsors")
+    k2.metric("Est. top specialty reach", f"{max(spec_counts.values()):,}+")
+    k3.metric("Pharma sponsors found",   len(sponsor_data))
     k4.metric("US markets monitored",    len(US_STATES))
     st.markdown("---")
 
