@@ -93,3 +93,4 @@ def render():
             cols = st.columns([5,1])
             cols[0].markdown(f"<span style='font-size:12px;color:#c5cae9'>{j}</span>", unsafe_allow_html=True)
             cols[1].markdown(f"<span class='badge badge-blue'>{c}</span>", unsafe_allow_html=True)
+
