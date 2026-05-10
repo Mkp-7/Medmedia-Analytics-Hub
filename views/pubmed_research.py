@@ -19,7 +19,7 @@ QUICK_TOPICS = {
 
 
 def render():
-    page_header("PubMed Research Trends", "Publication volume, trends, and article explorer across 35M+ biomedical papers", "📚")
+    page_header("PubMed Research Trends", "Search 35M+ biomedical papers via NCBI E-utilities API — free, no key required", "📚")
 
     col_q, col_btn = st.columns([5, 1])
     with col_q:
@@ -93,4 +93,3 @@ def render():
             cols = st.columns([5,1])
             cols[0].markdown(f"<span style='font-size:12px;color:#c5cae9'>{j}</span>", unsafe_allow_html=True)
             cols[1].markdown(f"<span class='badge badge-blue'>{c}</span>", unsafe_allow_html=True)
-
