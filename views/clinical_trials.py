@@ -13,13 +13,13 @@ QUICK_TERMS    = ["Oncology", "Cardiology", "Alzheimer's", "Diabetes", "Immunoth
 
 
 def render():
-    page_header("Clinical Trial Intelligence Explorer", "Search and filter 470,000+ active clinical trials by condition, phase, and sponsor", "🧪")
+    page_header("Clinical Trial Intelligence Explorer", "Search 470,000+ live trials from ClinicalTrials.gov v2 API — no API key required", "🧪")
 
     col_q, col_s, col_p = st.columns([2.5, 1.2, 1.2])
     with col_q:
         query = st.text_input("Search", value="oncology", label_visibility="collapsed", placeholder="Search condition, drug, or keyword…")
     with col_s:
-        status = STATUS_OPTIONS[st.selectbox("Status", list(STATUS_OPTIONS.keys()),index=3, label_visibility="collapsed")]
+        status = STATUS_OPTIONS[st.selectbox("Status", list(STATUS_OPTIONS.keys()), label_visibility="collapsed")]
     with col_p:
         phase_filter = st.selectbox("Phase", PHASE_OPTIONS, label_visibility="collapsed")
 
