@@ -22,7 +22,7 @@ def render():
         topic_counts = pubmed_topic_counts(TOPICS, days=90)
 
     if trial_data.get("demo_mode"):
-        st.caption("📊 Showing representative data — live API updates available on local deployment")
+        demo_warning()
 
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Active Trial Registry",   f"{trial_data.get('total', 470000):,}", "ClinicalTrials.gov v2")
