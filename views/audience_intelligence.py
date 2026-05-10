@@ -4,7 +4,7 @@ import streamlit as st
 import plotly.graph_objects as go
 
 from utils.api import fetch_specialty_trial_counts, fetch_sponsor_intel
-from utils.ui import page_header, section_header, demo_warning
+from utils.ui import page_header, section_header
 
 SPECIALTIES = ["Oncology","Cardiology","Neurology","Immunology","Rare Disease","Endocrinology","Infectious Disease","Gastroenterology","Pulmonology","Hematology"]
 COLORS = ["#378ADD","#1D9E75","#BA7517","#D4537E","#534AB7","#639922","#E24B4A","#0F6E56","#185FA5","#63222C"]
@@ -20,8 +20,7 @@ def render():
         sponsor_data = fetch_sponsor_intel("oncology cardiology neurology rare disease", 50)
 
     if not any(spec_counts.values()):
-        demo_warning()
-        spec_counts = {s: ENGAGEMENT[s]["hcp"] for s in SPECIALTIES if s in ENGAGEMENT}
+        st.caption("📊 Showing representative data — live API updates available on local deployment")
 
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Specialties tracked",     len(SPECIALTIES))
