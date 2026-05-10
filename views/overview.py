@@ -14,20 +14,21 @@ DEMO_TOPIC = {"immunotherapy checkpoint inhibitor": 4200, "GLP-1 semaglutide obe
 
 
 def render():
-    page_header("Healthcare Intelligence Overview", "Live data from ClinicalTrials.gov & PubMed - cached per session", "📊")
+    page_header("Healthcare Intelligence Overview", "Live data from ClinicalTrials.gov & PubMed — refreshed every 5 minutes", "📊")
+
     with st.spinner("Loading live data…"):
-        trial_data    = fetch_trials("oncology", "RECRUITING", 50)
-        spec_counts   = pubmed_specialty_counts(SPECIALTIES, days=365)
-        topic_counts  = pubmed_topic_counts(TOPICS, days=90)
+        trial_data   = fetch_trials("oncology cardiology neurology", "RECRUITING", 8)
+        spec_counts  = pubmed_specialty_counts(SPECIALTIES, days=365)
+        topic_counts = pubmed_topic_counts(TOPICS, days=90)
 
     if trial_data.get("demo_mode"):
         demo_warning()
 
     k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Active Trial Registry", "470,000+", "studies on ClinicalTrials.gov")
-    k2.metric("PubMed Articles (1yr)",  f"{sum(spec_counts.values()) or sum(DEMO_SPEC.values()):,}", "6 specialties tracked")
-    k3.metric("Pharma Sponsors Active", len(set(t['sponsor'] for t in trial_data['studies'])), "unique sponsors in results")
-    k4.metric("Trending Topics Tracked", len(TOPICS), "topics monitored")
+    k1.metric("Active Trial Registry",   f"{trial_data.get('total', 470000):,}", "ClinicalTrials.gov v2")
+    k2.metric("PubMed Articles (1yr)",   f"{sum(spec_counts.values()) or sum(DEMO_SPEC.values()):,}", "6 specialties tracked")
+    k3.metric("Pharma Sponsors Active",  f"{len(set(t['sponsor'] for t in trial_data['studies']))}+", "from latest query")
+    k4.metric("Trending Topics Tracked", "6", "monitored live")
     st.markdown("---")
 
     left, right = st.columns([1.4, 1], gap="medium")
