@@ -8,3 +8,4 @@ textColor              = "#c5cae9"
 [server]
 headless = True
 port     = 8501
+fileWatcherType = "none"
