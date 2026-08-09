@@ -6,6 +6,6 @@ secondaryBackgroundColor = "#1a1d2e"
 textColor              = "#c5cae9"
 
 [server]
-headless = True
+headless = true
 port     = 8501
 fileWatcherType = "none"
